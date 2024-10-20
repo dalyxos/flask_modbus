@@ -59,7 +59,8 @@ def create_modbus_server(server_id, address, port):
         'context': context,
         'thread': server_thread,
         'loop': loop,
-        'task': server_task
+        'task': server_task,
+        'port': port
     }
 
 def stop_modbus_server(server_id):

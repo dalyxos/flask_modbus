@@ -1,0 +1,35 @@
+{
+    "servers": [
+        {
+            "type": "Solax",
+            "port": 5020,
+            "parameters": [
+                {
+                    "name": "Voltage",
+                    "address": 0,
+                    "function_code": 3
+                },
+                {
+                    "name": "Current",
+                    "address": 1,
+                    "function_code": 3
+                },
+                {
+                    "name": "Power",
+                    "address": 2,
+                    "function_code": 3
+                },
+                {
+                    "name": "Temperature",
+                    "address": 0,
+                    "function_code": 4
+                },
+                {
+                    "name": "Set Mode",
+                    "address": 10,
+                    "function_code": 6
+                }
+            ]
+        }
+    ]
+}

@@ -34,10 +34,14 @@ def api_stop_server(server_id):
 def api_get_registers(server_id):
     context = get_modbus_server_context(server_id)
     if context:
-        hr_values = context[0].getValues(3, 0, count=10)
-        ir_values = context[0].getValues(4, 0, count=10)
-        fc6_values = context[0].getValues(6, 0, count=10)
-        return jsonify({'hr': hr_values, 'ir': ir_values, 'fc6': fc6_values})
+        parameters = request.args.get('parameters')
+        parameters = json.loads(parameters)
+        values = {}
+        for param in parameters:
+            fc = param['function_code']
+            address = param['address']
+            values[param['name']] = context[0].getValues(fc, address, count=1)[0]
+        return jsonify(values)
     else:
         return jsonify({'status': 'error', 'message': 'Server not found'}), 404
 
@@ -47,15 +51,11 @@ def api_set_register(server_id):
     context = get_modbus_server_context(server_id)
     if context:
         data = request.json
-        reg_type = data['type']
-        index = data['index']
+        name = data['name']
+        address = data['address']
+        function_code = data['function_code']
         value = data['value']
-        if reg_type == 'hr':
-            context[0].setValues(3, index, [value])
-        elif reg_type == 'ir':
-            context[0].setValues(4, index, [value])
-        elif reg_type == 'fc6':
-            context[0].setValues(6, index, [value])
+        context[0].setValues(function_code, address, [value])
         return jsonify({'status': 'success'})
     else:
         return jsonify({'status': 'error', 'message': 'Server not found'}), 404
@@ -65,4 +65,6 @@ def api_set_register(server_id):
 def home():
     from modbus_server import modbus_servers
     server_config = load_server_config()
+    for server in server_config['servers']:
+        server['parameters_json'] = json.dumps(server['parameters'])
     return render_template('home.html', servers=modbus_servers, server_config=server_config)

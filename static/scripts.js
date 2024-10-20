@@ -6,6 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
         const serverType = selectedOption.value;
         const port = selectedOption.dataset.port;
+        const parameters = JSON.parse(selectedOption.dataset.parameters);
         const serverId = serverType.replace(/\s+/g, '_') + '_' + port;
 
         fetch('/api/create_server', {
@@ -57,54 +58,34 @@ function openServer(evt, serverId) {
 }
 
 function fetchRegisters(serverId) {
-    fetch('/api/get_registers/' + serverId)
+    const serverTypeSelect = document.getElementById('server_type');
+    const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
+    const parameters = JSON.parse(selectedOption.dataset.parameters);
+
+    fetch(`/api/get_registers/${serverId}?parameters=${encodeURIComponent(JSON.stringify(parameters))}`)
         .then(response => response.json())
         .then(data => {
-            document.getElementById(serverId + '-hr').innerText = data.hr.join(', ');
-            document.getElementById(serverId + '-ir').innerText = data.ir.join(', ');
-            document.getElementById(serverId + '-fc6').innerText = data.fc6.join(', ');
+            const parametersDiv = document.getElementById(serverId + '-parameters');
+            parametersDiv.innerHTML = '';
 
-            // Create input fields for editing registers
-            const hrEditDiv = document.getElementById(serverId + '-edit-hr');
-            hrEditDiv.innerHTML = '';
-            data.hr.forEach((value, index) => {
+            parameters.forEach(param => {
+                const paramDiv = document.createElement('div');
+                paramDiv.innerHTML = `<strong>${param.name}:</strong> <span id="${serverId}-${param.name}">${data[param.name]}</span>`;
+                parametersDiv.appendChild(paramDiv);
+
                 const input = document.createElement('input');
                 input.type = 'number';
-                input.value = value;
+                input.value = data[param.name];
                 input.className = 'register-input';
-                input.id = serverId + '-hr-' + index;
-                input.addEventListener('change', () => updateRegister(serverId, 'hr', index, input.value));
-                hrEditDiv.appendChild(input);
-            });
-
-            const irEditDiv = document.getElementById(serverId + '-edit-ir');
-            irEditDiv.innerHTML = '';
-            data.ir.forEach((value, index) => {
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.value = value;
-                input.className = 'register-input';
-                input.id = serverId + '-ir-' + index;
-                input.addEventListener('change', () => updateRegister(serverId, 'ir', index, input.value));
-                irEditDiv.appendChild(input);
-            });
-
-            const fc6EditDiv = document.getElementById(serverId + '-edit-fc6');
-            fc6EditDiv.innerHTML = '';
-            data.fc6.forEach((value, index) => {
-                const input = document.createElement('input');
-                input.type = 'number';
-                input.value = value;
-                input.className = 'register-input';
-                input.id = serverId + '-fc6-' + index;
-                input.addEventListener('change', () => updateRegister(serverId, 'fc6', index, input.value));
-                fc6EditDiv.appendChild(input);
+                input.id = `${serverId}-${param.name}-input`;
+                input.addEventListener('change', () => updateRegister(serverId, param.name, param.address, param.function_code, input.value));
+                parametersDiv.appendChild(input);
             });
         });
 }
 
-function updateRegister(serverId, type, index, value) {
-    const payload = { type, index, value: parseInt(value) };
+function updateRegister(serverId, name, address, function_code, value) {
+    const payload = { name, address, function_code, value: parseInt(value) };
     fetch(`/api/set_register/${serverId}`, {
         method: 'POST',
         headers: {

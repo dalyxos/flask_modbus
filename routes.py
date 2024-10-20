@@ -114,3 +114,8 @@ def home():
     for server in server_config['servers']:
         server['parameters_json'] = json.dumps(server['parameters'])
     return render_template('home.html', servers=modbus_servers, server_config=server_config)
+
+# Help page
+@app.route('/help')
+def help():
+    return render_template('help.html')

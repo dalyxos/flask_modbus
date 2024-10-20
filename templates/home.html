@@ -1,47 +1,29 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>Modbus Server Manager</title>
-    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='styles.css') }}">
-</head>
-<body>
-    <header>
-        <div class="container">
-            <div id="branding">
-                <h1>Modbus Server Manager</h1>
-            </div>
-            <nav>
-                <ul>
-                    <li><a href="/">Home</a></li>
-                </ul>
-            </nav>
-        </div>
-    </header>
-    <div class="container">
-        <div>
-            <label for="server_type">Select Server Type:</label>
-            <select id="server_type" name="server_type">
-                {% for server in server_config.servers %}
-                    <option value="{{ server.type }}" data-port="{{ server.port }}" data-parameters="{{ server.parameters_json }}">{{ server.type }}</option>
-                {% endfor %}
-            </select>
-            <button id="create-server-button" class="button">Create Server</button>
-        </div>
-        <h2>Active Servers</h2>
-        <div class="tab">
-            {% for server_id, server_info in servers.items() %}
-                <button class="tablinks" onclick="openServer(event, '{{ server_id }}')">{{ server_id }}</button>
-            {% endfor %}
-        </div>
-        {% for server_id, server_info in servers.items() %}
-            <div id="{{ server_id }}" class="tabcontent">
-                <h3>{{ server_id }} ({{ server_info.port }})</h3>
-                <div id="{{ server_id }}-parameters"></div>
-                <button onclick="stopServer('{{ server_id }}')">Stop</button>
-            </div>
+{% extends "base.html" %}
+
+{% block title %}Home - Modbus Server Manager{% endblock %}
+
+{% block content %}
+<div>
+    <label for="server_type">Select Server Type:</label>
+    <select id="server_type" name="server_type">
+        {% for server in server_config.servers %}
+            <option value="{{ server.type }}" data-port="{{ server.port }}" data-parameters="{{ server.parameters_json }}">{{ server.type }}</option>
         {% endfor %}
+    </select>
+    <button id="create-server-button" class="button">Create Server</button>
+</div>
+<h2>Active Servers</h2>
+<div class="tab">
+    {% for server_id, server_info in servers.items() %}
+        <button class="tablinks" onclick="openServer(event, '{{ server_id }}')">{{ server_id }}</button>
+    {% endfor %}
+</div>
+{% for server_id, server_info in servers.items() %}
+    <div id="{{ server_id }}" class="tabcontent">
+        <h3>{{ server_id }} ({{ server_info.port }})</h3>
+        <div id="{{ server_id }}-parameters"></div>
+        <button onclick="stopServer('{{ server_id }}')">Stop</button>
     </div>
-    <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-</body>
-</html>
+{% endfor %}
+<script src="{{ url_for('static', filename='scripts.js') }}"></script>
+{% endblock %}

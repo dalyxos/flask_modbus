@@ -1,5 +1,8 @@
 // static/scripts.js
 
+// Object to store selected actions for each parameter
+const actions = {};
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('create-server-button').addEventListener('click', function() {
         const serverTypeSelect = document.getElementById('server_type');
@@ -70,7 +73,16 @@ function fetchRegisters(serverId) {
 
             parameters.forEach(param => {
                 const paramDiv = document.createElement('div');
-                paramDiv.innerHTML = `<strong>${param.name}:</strong> <span id="${serverId}-${param.name}">${data[param.name]}</span>`;
+                paramDiv.innerHTML = `
+                    <strong>${param.name}:</strong> 
+                    <span id="${serverId}-${param.name}">${data[param.name]}</span>
+                    <select id="${serverId}-${param.name}-action" onchange="setAction('${serverId}', '${param.name}', this.value)">
+                        <option value="none">None</option>
+                        <option value="random">Random</option>
+                        <option value="increment">Increment</option>
+                        <option value="reset">Reset</option>
+                    </select>
+                `;
                 parametersDiv.appendChild(paramDiv);
 
                 const input = document.createElement('input');
@@ -80,8 +92,33 @@ function fetchRegisters(serverId) {
                 input.id = `${serverId}-${param.name}-input`;
                 input.addEventListener('change', () => updateRegister(serverId, param.name, param.address, param.function_code, input.value));
                 parametersDiv.appendChild(input);
+
+                // Restore the selected action from the actions object
+                if (actions[serverId] && actions[serverId][param.name]) {
+                    document.getElementById(`${serverId}-${param.name}-action`).value = actions[serverId][param.name];
+                }
             });
         });
+}
+
+function setAction(serverId, paramName, action) {
+    if (!actions[serverId]) {
+        actions[serverId] = {};
+    }
+    actions[serverId][paramName] = action;
+
+    // Call the REST API to set the action
+    fetch(`/api/set_action/${serverId}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ param_name: paramName, action: action })
+    }).then(response => response.json()).then(data => {
+        if (data.status !== 'success') {
+            alert('Error setting action');
+        }
+    });
 }
 
 function updateRegister(serverId, name, address, function_code, value) {

@@ -1,22 +1,32 @@
+// static/scripts.js
 
-document.getElementById('create-server-form').addEventListener('submit', function(event) {
-    event.preventDefault();
-    const serverId = document.getElementById('server_id').value;
-    const address = document.getElementById('address').value;
-    const port = document.getElementById('port').value;
-    fetch('/api/create_server', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ server_id: serverId, address: address, port: port })
-    }).then(response => response.json()).then(data => {
-        if (data.status === 'success') {
-            location.reload();
-        } else {
-            alert('Error creating server');
-        }
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('create-server-button').addEventListener('click', function() {
+        const serverTypeSelect = document.getElementById('server_type');
+        const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
+        const serverType = selectedOption.value;
+        const port = selectedOption.dataset.port;
+        const serverId = serverType.replace(/\s+/g, '_') + '_' + port;
+
+        fetch('/api/create_server', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({ server_id: serverId, address: '0.0.0.0', port: parseInt(port) })
+        }).then(response => response.json()).then(data => {
+            if (data.status === 'success') {
+                location.reload();
+            } else {
+                alert('Error creating server');
+            }
+        });
     });
+
+    if (document.getElementsByClassName('tablinks').length > 0) {
+        document.getElementsByClassName('tablinks')[0].click();
+    }
+    setInterval(updateRegisters, 5000); // Poll every 5 seconds
 });
 
 function stopServer(serverId) {
@@ -107,37 +117,6 @@ function updateRegister(serverId, type, index, value) {
         }
     });
 }
-
-function submitRegisters(serverId) {
-    const hrInputs = document.querySelectorAll(`#${serverId}-edit-hr input`);
-    const irInputs = document.querySelectorAll(`#${serverId}-edit-ir input`);
-    const fc6Inputs = document.querySelectorAll(`#${serverId}-edit-fc6 input`);
-    const hrValues = Array.from(hrInputs).map(input => parseInt(input.value));
-    const irValues = Array.from(irInputs).map(input => parseInt(input.value));
-    const fc6Values = Array.from(fc6Inputs).map(input => parseInt(input.value));
-
-    fetch('/api/set_registers/' + serverId, {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify({ hr: hrValues, ir: irValues, fc6: fc6Values })
-    }).then(response => response.json()).then(data => {
-        if (data.status === 'success') {
-            fetchRegisters(serverId);
-        } else {
-            alert('Error setting registers');
-        }
-    });
-}
-
-// Open the first tab by default
-document.addEventListener('DOMContentLoaded', function() {
-    if (document.getElementsByClassName('tablinks').length > 0) {
-        document.getElementsByClassName('tablinks')[0].click();
-    }
-    setInterval(updateRegisters, 5000); // Poll every 5 seconds
-});
 
 function updateRegisters() {
     var tablinks = document.getElementsByClassName('tablinks');

@@ -1,8 +1,15 @@
 # routes.py
 from flask import Flask, request, jsonify, render_template
 from modbus_server import create_modbus_server, stop_modbus_server, get_modbus_server_context
+***REMOVED***
+import os
 
 app = Flask(__name__)
+
+# Load server configuration from JSON file
+def load_server_config():
+    with open('./config/servers.json') as f:
+        return json.load(f)
 
 # REST API to create a new Modbus server
 @app.route('/api/create_server', methods=['POST'])
@@ -57,4 +64,5 @@ def api_set_register(server_id):
 @app.route('/')
 def home():
     from modbus_server import modbus_servers
-    return render_template('home.html', servers=modbus_servers)
+    server_config = load_server_config()
+    return render_template('home.html', servers=modbus_servers, server_config=server_config)

@@ -14,8 +14,12 @@ actions = {}
 
 # Load server configuration from JSON file
 def load_server_config():
-    with open('/app/data/servers.json') as f:
-        return json.load(f)
+    try:
+        with open('/app/data/servers.json') as f:
+            return json.load(f)
+    except FileNotFoundError:
+        with open('./config/servers.json') as f:
+            return json.load(f)
 
 # Function to apply actions periodically
 def apply_actions():

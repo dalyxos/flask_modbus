@@ -111,8 +111,13 @@ You can configure the simulator by editing the `servers.json` file located in th
 
 ## Running with Docker
 To run the Docker container, exposing the necessary port and mounting the volume for configuration files, use the following command:
-   ```sh
+   ```bash
+   # Linux
    docker run -d -p 8000:8000 -v $(pwd)/app/data:/app/data --name flask_modbus_container flask_modbus
+   ```
+   ```PS
+   # Windows
+   docker run -d -p 8000:8000 -v ${pwd}/app/data:/app/data --name flask_modbus_container flask_modbus
    ```
 * `-d`: Run the container in detached mode.
 * `-p 8000:8000`: Map port 8000 on the host to port 8000 in the container.

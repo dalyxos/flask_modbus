@@ -1,2 +1,2 @@
 # flask_modbus
-Modbus Simulator based on pymodbus
+Modbus Simulator based on pymodbus and flask

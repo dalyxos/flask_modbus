@@ -2,7 +2,6 @@
 from flask import Flask, request, jsonify, render_template
 from modbus_server import create_modbus_server, stop_modbus_server, get_modbus_server_context
 import json
-import os
 import threading
 import time
 import random
@@ -12,6 +11,7 @@ app = Flask(__name__)
 # Global dictionary to store actions
 actions = {}
 
+
 # Load server configuration from JSON file
 def load_server_config():
     try:
@@ -20,6 +20,7 @@ def load_server_config():
     except FileNotFoundError:
         with open('./config/servers.json') as f:
             return json.load(f)
+
 
 # Function to apply actions periodically
 def apply_actions():
@@ -44,10 +45,12 @@ def apply_actions():
                             context[0].setValues(function_code, address, [new_value])
         time.sleep(1)  # Apply actions every 5 seconds
 
+
 # Start the action application thread
 action_thread = threading.Thread(target=apply_actions)
 action_thread.daemon = True
 action_thread.start()
+
 
 # REST API to create a new Modbus server
 @app.route('/api/create_server', methods=['POST'])
@@ -59,6 +62,7 @@ def api_create_server():
     create_modbus_server(server_id, address, port)
     return jsonify({'status': 'success', 'server_id': server_id})
 
+
 # REST API to stop a Modbus server
 @app.route('/api/stop_server/<server_id>', methods=['POST'])
 def api_stop_server(server_id):
@@ -66,6 +70,7 @@ def api_stop_server(server_id):
         return jsonify({'status': 'success', 'server_id': server_id})
     else:
         return jsonify({'status': 'error', 'message': 'Server not found'}), 404
+
 
 # REST API to get register values for a Modbus server
 @app.route('/api/get_registers/<server_id>', methods=['GET'])
@@ -83,13 +88,13 @@ def api_get_registers(server_id):
     else:
         return jsonify({'status': 'error', 'message': 'Server not found'}), 404
 
+
 # REST API to set a single register value for a Modbus server
 @app.route('/api/set_register/<server_id>', methods=['POST'])
 def api_set_register(server_id):
     context = get_modbus_server_context(server_id)
     if context:
         data = request.json
-        name = data['name']
         address = data['address']
         function_code = data['function_code']
         value = data['value']
@@ -97,6 +102,7 @@ def api_set_register(server_id):
         return jsonify({'status': 'success'})
     else:
         return jsonify({'status': 'error', 'message': 'Server not found'}), 404
+
 
 # REST API to set an action for a parameter
 @app.route('/api/set_action/<server_id>', methods=['POST'])
@@ -109,6 +115,7 @@ def api_set_action(server_id):
     actions[server_id][param_name] = action
     return jsonify({'status': 'success'})
 
+
 # Web interface to manage Modbus servers
 @app.route('/')
 def home():
@@ -118,6 +125,7 @@ def home():
     for server in server_config['servers']:
         server['parameters_json'] = json.dumps(server['parameters'])
     return render_template('home.html', servers=modbus_servers, server_config=server_config)
+
 
 # Help page
 @app.route('/help')

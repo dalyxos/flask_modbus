@@ -14,13 +14,16 @@ log = logging.getLogger()
 # Dictionary to store Modbus server instances
 modbus_servers = {}
 
+
 # Callback for when a Modbus master connects
 def on_connect(client):
     log.info(f"Modbus master connected: {client}")
 
+
 # Callback for when a Modbus master disconnects
 def on_disconnect(client):
     log.info(f"Modbus master disconnected: {client}")
+
 
 # Function to create and start a Modbus server
 def create_modbus_server(server_id, address, port):
@@ -30,7 +33,7 @@ def create_modbus_server(server_id, address, port):
         hr=ModbusSequentialDataBlock(0, [0]*100),
         ir=ModbusSequentialDataBlock(0, [0]*100))
     store.register(6, 'fc6', ModbusSequentialDataBlock(0, [0]*100))  # Data block for function code 6
-    
+
     context = ModbusServerContext(slaves=store, single=True)
 
     identity = ModbusDeviceIdentification()
@@ -63,6 +66,7 @@ def create_modbus_server(server_id, address, port):
         'port': port
     }
 
+
 def stop_modbus_server(server_id):
     if server_id in modbus_servers:
         server_info = modbus_servers[server_id]
@@ -71,6 +75,7 @@ def stop_modbus_server(server_id):
         del modbus_servers[server_id]
         return True
     return False
+
 
 def get_modbus_server_context(server_id):
     if server_id in modbus_servers:

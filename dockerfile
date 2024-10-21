@@ -16,5 +16,8 @@ COPY . .
 # Expose port 8000
 EXPOSE 8000
 
+# Create a volume for the data
+VOLUME [ "/app/data/" ]
+
 # Specify the command to run the application
 CMD ["python", "app.py"]

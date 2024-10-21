@@ -229,6 +229,12 @@ The Flask Modbus application provides a REST API to interact with the Modbus ser
     "message": "Server deleted successfully"
 }
 ```
-## License
 
+## Testing
+To run tests using pytest, use the following command:
+```sh
+pytest
+```
+
+## License
 This project is licensed under the MIT License.

@@ -129,10 +129,10 @@ To run the Docker container, exposing the necessary port and mounting the volume
 The Flask Modbus application provides a REST API to interact with the Modbus servers. Below are the available endpoints:
 
 ### Get All Servers
-* Endpoint: `/api/servers`
-* Method: `GET`
-* Description: Retrieves a list of all configured Modbus servers.
-* Response:
+* **Endpoint:** `/api/servers`
+* **Method:** `GET`
+* **Description**: Retrieves a list of all configured Modbus servers.
+* **Response**:
 ```json
 [
     {
@@ -151,10 +151,10 @@ The Flask Modbus application provides a REST API to interact with the Modbus ser
 ]
 ```
 ### Get Server Details
-* Endpoint: `/api/servers/<server_id>`
-* Method: `GET`
-* Description: Retrieves details of specific Modbus server.
-* Response:
+* **Endpoint:** `/api/servers/<server_id>`
+* **Method:** `GET`
+* **Description:** Retrieves details of specific Modbus server.
+* **Response:**
 ```json
 {
     "type": "Solax",
@@ -170,10 +170,10 @@ The Flask Modbus application provides a REST API to interact with the Modbus ser
 }
 ```
 ### Add a New Server
-* Endpoint: `/api/servers`
-* Method: `POST`
-* Description: Adds a new Modbus server.
-* Request Body:
+* **Endpoint:** `/api/servers`
+* **Method:** `POST`
+* **Description:** Adds a new Modbus server.
+* **Request Body:**
 ```json
 {
     "type": "Solax",
@@ -188,17 +188,17 @@ The Flask Modbus application provides a REST API to interact with the Modbus ser
     ]
 }
 ```
-* Response:
+* **Response:**
 ```json
 {
     "message": "Server added successfully"
 }
 ```
 ### Update Server
-* Endpoint: `/api/servers/<server_id>`
-* Method: `PUT`
-* Description: Updates an existing Modbus server.
-* Request Body:
+* **Endpoint:** `/api/servers/<server_id>`
+* **Method:** `PUT`
+* **Description:** Updates an existing Modbus server.
+* **Request Body:**
 ```json
 {
     "type": "Solax",
@@ -213,17 +213,17 @@ The Flask Modbus application provides a REST API to interact with the Modbus ser
     ]
 }
 ```
-* Response:
+* **Response:**
 ```json
 {
     "message": "Server updated successfully"
 }
 ```
 ### Delete Server
-* Endpoint: `/api/servers/<server_id>`
-* Method: `DELETE`
-* Description: Deletes a specific Modbus server.
-* Response:
+* **Endpoint:** `/api/servers/<server_id>`
+* **Method:** `DELETE`
+* **Description:** Deletes a specific Modbus server.
+* **Response:**
 ```json
 {
     "message": "Server deleted successfully"
@@ -236,5 +236,7 @@ To run tests using pytest, use the following command:
 pytest
 ```
 
+
 ## License
-This project is licensed under the MIT License.
+
+This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for more details.

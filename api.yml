@@ -1,0 +1,129 @@
+openapi: 3.0.0
+info:
+  title: Flask Modbus API
+  version: 1.0.0
+  description: A Flask application to manage Modbus servers.
+servers:
+  - url: http://localhost:8000
+paths:
+  /servers:
+    get:
+      summary: Get All Servers
+      responses:
+        '200':
+          description: A list of servers
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Server'
+    post:
+      summary: Add a New Server
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Server'
+      responses:
+        '201':
+          description: Server created
+  /servers/{serverId}:
+    get:
+      summary: Get Server Details
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Server details
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Server'
+    put:
+      summary: Update Server
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Server'
+      responses:
+        '200':
+          description: Server updated
+    delete:
+      summary: Delete Server
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '204':
+          description: Server deleted
+  /set_action/{serverId}:
+    post:
+      summary: Set Action for a Server Parameter
+      parameters:
+        - name: serverId
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Action'
+      responses:
+        '200':
+          description: Action set
+components:
+  schemas:
+    Server:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        address:
+          type: string
+        port:
+          type: integer
+        parameters:
+          type: array
+          items:
+            $ref: '#/components/schemas/Parameter'
+    Parameter:
+      type: object
+      properties:
+        name:
+          type: string
+        value:
+          type: string
+    Action:
+      type: object
+      properties:
+        param_name:
+          type: string
+        action:
+          type: string
+          enum:
+            - increment
+            - random
+            - reset
+          

@@ -50,7 +50,7 @@ This project provides a Flask-based web interface to manage Modbus servers. It a
 
 2. Access the web interface at `http://127.0.0.1:8000`.
 
-#***REMOVED***
+## Configuration
 
 You can configure the simulator by editing the `servers.json` file located in the `/app/data/` directory.
 

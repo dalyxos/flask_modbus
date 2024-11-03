@@ -1,10 +1,10 @@
 # routes.py
 from flask import Flask, request, jsonify, render_template
 from modbus_server import create_modbus_server, stop_modbus_server, get_modbus_server_context
-***REMOVED***
+import json
 import threading
-***REMOVED***
-***REMOVED***
+import time
+import random
 
 app = Flask(__name__)
 
@@ -40,7 +40,7 @@ def apply_actions():
                                 new_value = current_value + 1
                             elif action == 'reset':
                                 new_value = 0
-    ***REMOVED***
+                            else:
                                 new_value = current_value
                             context[0].setValues(function_code, address, [new_value])
         time.sleep(1)  # Apply actions every 5 seconds
@@ -131,3 +131,8 @@ def home():
 @app.route('/help')
 def help():
     return render_template('help.html')
+
+# empty page
+@app.route('/empty')
+def empty():
+    return render_template('empty.html')

@@ -131,3 +131,8 @@ def home():
 @app.route('/help')
 def help():
     return render_template('help.html')
+
+# empty page
+@app.route('/empty')
+def empty():
+    return render_template('empty.html')

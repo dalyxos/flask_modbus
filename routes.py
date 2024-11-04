@@ -5,6 +5,10 @@ import json
 import threading
 import time
 import random
+import openmeteo_requests
+import requests_cache
+import pandas as pd
+from retry_requests import retry
 
 app = Flask(__name__)
 
@@ -114,6 +118,45 @@ def api_set_action(server_id):
         actions[server_id] = {}
     actions[server_id][param_name] = action
     return jsonify({'status': 'success'})
+
+@app.route('/radiation')
+def radiation():
+    return render_template('radiation.html')
+
+@app.route('/api/direct_radiation')
+def direct_radiation():
+    # Setup the Open-Meteo API client with cache and retry on error
+    cache_session = requests_cache.CachedSession('.cache', expire_after = 3600)
+    retry_session = retry(cache_session, retries = 5, backoff_factor = 0.2)
+    openmeteo = openmeteo_requests.Client(session = retry_session)
+
+    # Make sure all required weather variables are listed here
+    # The order of variables in hourly or daily is important to assign them correctly below
+    url = "https://api.open-meteo.com/v1/forecast"
+    params = {
+        "latitude": 51.05,
+        "longitude": 3.7167,
+        "hourly": "direct_radiation",
+        "timezone": "auto"
+    }
+    responses = openmeteo.weather_api(url, params=params)
+    response = responses[0]
+    hourly = response.Hourly()
+    hourly_direct_radiation = hourly.Variables(0).ValuesAsNumpy()
+
+    hourly_data = {"date": pd.date_range(
+        start = pd.to_datetime(hourly.Time(), unit = "s", utc = True),
+        end = pd.to_datetime(hourly.TimeEnd(), unit = "s", utc = True),
+        freq = pd.Timedelta(seconds = hourly.Interval()),
+        inclusive = "left"
+    )}
+    hourly_data["direct_radiation"] = hourly_direct_radiation
+    hourly_dataframe = pd.DataFrame(data = hourly_data)
+    data = {
+        'dates': hourly_dataframe['date'].tolist(),
+        'direct_radiation': hourly_dataframe['direct_radiation'].tolist()
+    }
+    return jsonify(data)
 
 
 # Web interface to manage Modbus servers

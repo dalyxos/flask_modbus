@@ -4,7 +4,7 @@ import time
 import random
 
 # Configuration
-API_KEY = '98308c99d4f683bf560b530c92c545b5'
+API_KEY = '000'
 LAT = 51.0414775  # Latitude for Ghent
 LON = 3.7598537   # Longitude for Ghent
 UPDATE_INTERVAL = 48 * 24 * 3600  # Update every 2 days

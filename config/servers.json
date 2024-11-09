@@ -4,26 +4,44 @@
             "type": "Solax",
             "port": 5020,
             "parameters": [
-                {
-                    "name": "Voltage",
-                    "address": 0,
-                    "function_code": 3
-                },
-                {
-                    "name": "Current",
-                    "address": 1,
-                    "function_code": 3
-                },
-                {
-                    "name": "Power",
-                    "address": 2,
-                    "function_code": 3
-                },
-                {
-                    "name": "Set Mode",
-                    "address": 10,
-                    "function_code": 6
-                }
+                { "name": "factory_name", "function_code": 3, "address": 7, "type": "string", "size": 7, "default": "" },
+                { "name": "battery_charge_float_voltage", "function_code": 3, "address": 142, "type": "u16", "default": 0 },
+                { "name": "battery_charge_max_current", "function_code": 3, "address": 144, "type": "u16", "default": 0 },
+                { "name": "battery_discharge_max_current", "function_code": 3, "address": 145, "type": "u16", "default": 0 },
+                { "name": "battery_absorb_voltage", "function_code": 3, "address": 146, "type": "u16", "default": 0 },
+                { "name": "grid_current", "function_code": 4, "address": 1, "type": "i16", "default": 0 },
+                { "name": "grid_power", "function_code": 4, "address": 2, "type": "u32", "default": 0 },
+                { "name": "solar_connected", "function_code": 4, "address": 3, "type": "u16", "default": 0 },
+                { "name": "pv_power", "function_code": 4, "address": 10, "type": "u32", "default": 0 },
+                { "name": "battery_voltage", "function_code": 4, "address": 20, "type": "i16", "default": 0.0 },
+                { "name": "battery_current", "function_code": 4, "address": 21, "type": "i16", "default": 0.0 },
+                { "name": "battery_power", "function_code": 4, "address": 22, "type": "i32", "default": 0 },
+                { "name": "battery_connected", "function_code": 4, "address": 23, "type": "u16", "default": 0 },
+                { "name": "state_of_charge", "function_code": 4, "address": 28, "type": "u16", "default": 0 },
+                { "name": "out_charge_energy", "function_code": 4, "address": 29, "type": "u32", "default": 0 },
+                { "name": "in_charge_energy", "function_code": 4, "address": 33, "type": "u32", "default": 0 },
+                { "name": "power_limit", "function_code": 3, "address": 37, "type": "u16", "default": 0 },
+                { "name": "battery_capacity", "function_code": 4, "address": 38, "type": "u16", "default": 0 },
+                { "name": "battery_error", "function_code": 4, "address": 67, "type": "u16", "default": 0 },
+                { "name": "feeding_power", "function_code": 4, "address": 70, "type": "u32", "default": 0 },
+                { "name": "feeding_energy", "function_code": 4, "address": 72, "type": "u32", "default": 0 },
+                { "name": "consum_energy", "function_code": 4, "address": 74, "type": "u32", "default": 0 },
+                { "name": "total_energy_to_grid", "function_code": 4, "address": 82, "type": "u32", "default": 0 },
+                { "name": "solar_charge_use_mode", "function_code": 3, "address": 139, "type": "u16", "default": 0 },
+                { "name": "manual_mode", "function_code": 3, "address": 140, "type": "u16", "default": 0 },
+                { "name": "battery_type", "function_code": 3, "address": 141, "type": "u16", "default": 0 },
+                { "name": "solar_energy_index", "function_code": 4, "address": 148, "type": "u32", "default": 0 }
+            ]
+        },
+        {
+            "type": "Blitzpower",
+            "port": 5021,
+            "parameters": [
+                { "name": "I1", "function_code": 4, "address": 1238, "type": "u32", "default": 0 },
+                { "name": "I2", "function_code": 4, "address": 1240, "type": "u32", "default": 0 },
+                { "name": "I3", "function_code": 4, "address": 1240, "type": "u32", "default": 0 },
+                { "name": "Vehicle State", "function_code": 4, "address": 1242, "type": "u16", "default": 0 },
+                { "name": "HEMS", "function_code": 4, "address": 1301, "type": "u16", "default": 0 }
             ]
         }
     ]

@@ -21,7 +21,7 @@
 {% for server_id, server_info in servers.items() %}
     <div id="{{ server_id }}" class="tabcontent">
         <h3>{{ server_id }} ({{ server_info.port }})</h3>
-        <div id="{{ server_id }}-parameters"></div>
+        <div id="{{ server_id }}-parameters" data-parameters="{{ server_info.parameters_json }}"></div>
         <button onclick="stopServer('{{ server_id }}')">Stop</button>
     </div>
 {% endfor %}

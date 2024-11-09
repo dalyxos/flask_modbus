@@ -63,7 +63,11 @@ def api_create_server():
     server_id = data['server_id']
     address = data['address']
     port = data['port']
-    create_modbus_server(server_id, address, port)
+    parameters = {}
+    for server_cfg in server_config['servers']:
+        if server_id == f"{server_cfg['type']}_{server_cfg['port']}":
+            parameters = server_cfg['parameters']
+    create_modbus_server(server_id, address, port, parameters)
     return jsonify({'status': 'success', 'server_id': server_id})
 
 
@@ -165,8 +169,10 @@ def home():
     from modbus_server import modbus_servers
     global server_config
     server_config = load_server_config()
-    for server in server_config['servers']:
-        server['parameters_json'] = json.dumps(server['parameters'])
+    for server_id, server in modbus_servers.items():
+        for server_cfg in server_config['servers']:
+            if server_id == f"{server_cfg['type']}_{server_cfg['port']}":
+                server['parameters_json'] = json.dumps(server_cfg['parameters'])
     return render_template('home.html', servers=modbus_servers, server_config=server_config)
 
 

@@ -9,7 +9,6 @@ document.addEventListener('DOMContentLoaded', function() {
         const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
         const serverType = selectedOption.value;
         const port = selectedOption.dataset.port;
-        const parameters = JSON.parse(selectedOption.dataset.parameters);
         const serverId = serverType.replace(/\s+/g, '_') + '_' + port;
 
         fetch('/api/create_server', {
@@ -46,7 +45,7 @@ function stopServer(serverId) {
 }
 
 function openServer(evt, serverId) {
-    var i, tabcontent, tablinks;
+    let i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("tabcontent");
     for (i = 0; i < tabcontent.length; i++) {
         tabcontent[i].style.display = "none";
@@ -61,14 +60,14 @@ function openServer(evt, serverId) {
 }
 
 function fetchRegisters(serverId) {
-    const serverTypeSelect = document.getElementById('server_type');
-    const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
-    const parameters = JSON.parse(selectedOption.dataset.parameters);
+    //const serverTypeSelect = document.getElementById('server_type');
+    //const selectedOption = serverTypeSelect.options[serverTypeSelect.selectedIndex];
+    const parametersDiv = document.getElementById(serverId + '-parameters');
+    const parameters = JSON.parse(parametersDiv.dataset.parameters);
 
     fetch(`/api/get_registers/${serverId}?parameters=${encodeURIComponent(JSON.stringify(parameters))}`)
         .then(response => response.json())
         .then(data => {
-            const parametersDiv = document.getElementById(serverId + '-parameters');
             parametersDiv.innerHTML = '';
 
             parameters.forEach(param => {
@@ -86,7 +85,7 @@ function fetchRegisters(serverId) {
                 parametersDiv.appendChild(paramDiv);
 
                 const input = document.createElement('input');
-                input.type = 'number';
+                input.type = param.type === 'string' ? 'text' : 'number';
                 input.value = data[param.name];
                 input.className = 'register-input';
                 input.id = `${serverId}-${param.name}-input`;
@@ -94,7 +93,7 @@ function fetchRegisters(serverId) {
                 parametersDiv.appendChild(input);
 
                 // Restore the selected action from the actions object
-                if (actions[serverId] && actions[serverId][param.name]) {
+                if (actions[serverId]?.[param.name]) {
                     document.getElementById(`${serverId}-${param.name}-action`).value = actions[serverId][param.name];
                 }
             });
@@ -137,7 +136,7 @@ function updateRegister(serverId, name, address, function_code, value) {
 }
 
 function updateRegisters() {
-    var tablinks = document.getElementsByClassName('tablinks');
+    let tablinks = document.getElementsByClassName('tablinks');
     for (var i = 0; i < tablinks.length; i++) {
         var serverId = tablinks[i].innerText;
         fetchRegisters(serverId);

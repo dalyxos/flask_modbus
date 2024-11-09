@@ -16,6 +16,9 @@ COPY . .
 # Expose port 8000
 EXPOSE 8000
 
+# Expose ports 502 and 5000 to 5200
+EXPOSE 502 5000-5200
+
 # Create a volume for the data
 VOLUME [ "/app/data/" ]
 

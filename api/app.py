@@ -119,10 +119,6 @@ def api_set_action(server_id):
     actions[server_id][param_name] = action
     return jsonify({'status': 'success'})
 
-@app.route('/radiation')
-def radiation():
-    return render_template('radiation.html')
-
 @app.route('/api/direct_radiation')
 def direct_radiation():
     # Setup the Open-Meteo API client with cache and retry on error
@@ -169,13 +165,3 @@ def home():
         server['parameters_json'] = json.dumps(server['parameters'])
     return render_template('home.html', servers=modbus_servers, server_config=server_config)
 
-
-# Help page
-@app.route('/help')
-def help():
-    return render_template('help.html')
-
-# empty page
-@app.route('/empty')
-def empty():
-    return render_template('empty.html')
